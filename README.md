@@ -3,7 +3,7 @@
 ## About the project
 This project defines a social media web application lacking many key security features. The goal is to identify as many of these as possible, and then proceed to patch them. It can also be used for practice from the perspective of an attacker.
 
-There are also some comments around the code from the “previous developers” that didn’t have time to focus on security while developing the application. These may point in a possible direction to improve security, but of course you are free to choose your own path and implementation.
+There are also some comments in the code from the “previous developers” who didn’t have the time to focus on security while developing the application. These may point you in a possible direction on how to improve security, but of course you are free to choose your own path and implementation.
 
 ## Getting started
 
@@ -11,7 +11,9 @@ There are also some comments around the code from the “previous developers” 
 - Python 3.9 or greater
 - [PDM](https://daobook.github.io/pdm/) (Python Development Master)
 
-This project uses PDM as a package manager, which is similar to pip, but with more modern features. To install PDM for your operating system, follow the instructions on the [PDM website](https://daobook.github.io/pdm/#installation).
+This project uses PDM as a package manager, which is similar to pip, but with more modern features.
+
+To install PDM for your operating system, follow the instructions on the [PDM website](https://daobook.github.io/pdm/#installation). You might have to log out and back in again for the installation to take effect and the `pdm` command to become available.
 
 ### Installing
 
@@ -23,7 +25,7 @@ The following command will install all required production and development depen
 pdm install
 ```
 
-Modern IDEs such as Visual Studio Code, PyCharm, etc. should automatically detect the virtual environment created by PDM within the project’s root folder, and use it for the project. If not, you can manually select the virtual environment by following the instructions found on your IDE’s support pages.
+Modern IDEs, such as Visual Studio Code, PyCharm, etc., should automatically detect the virtual environment created by PDM within the project’s root folder and use it for the project. If not, you can manually select the virtual environment by following the instructions found on your IDE’s support pages.
 
 ### Structure
 
@@ -45,8 +47,12 @@ social-insecurity
 │   ├── forms.py
 │   ├── routes.py
 │   └── schema.sql
+├── instance
+│   ├── uploads
+│   └── sqlite3.db
 ├── tests
 │   └── test_routes.py
+├── .flaskenv
 ├── LICENSE.md
 ├── README.md
 ├── config.py
@@ -57,16 +63,18 @@ social-insecurity
 
 The most important files and directories:
 - `app/`: This directory is the root of the application, this is from where the pages are served.
-- `__init__.py`: Initializes the application.
-- `database.py`: Contains the database connection and functions for interacting with the database.
-- `forms.py`: Defines the forms that the users will use to input information.
-- `routes.py`: Implements the routing between different pages, handles form input and database calls.
-- `schema.sql`: Defines the database tables, and their relations.
-- `app/static/`: Static content, such as CSS, JavaScript and images can be stored and accessed here from anywhere in the application.
-- `app/templates/`: Contains all the HTML in a template format. This allows the Flask backend to display content dynamically, by integrating logical operators and variables into HTML. These are populated once the user requests one of the sites.
-- `tests`: Contains simple integration tests for the application.
+  - `app/__init__.py`: Initializes the application.
+  - `app/database.py`: Contains the database connection and functions for interacting with the database.
+  - `app/forms.py`: Defines the forms that the users will use to input information.
+  - `app/routes.py`: Implements the routing between different pages, handles form input and database calls.
+  - `app/schema.sql`: Defines the database tables, and their relations.
+  - `app/static/`: Directory containing static content. Files such as CSS and JavaScript can be stored here and accessed from anywhere in the application.
+  - `app/templates/`: Directory containing all the HTML files in a template format. This allows the application to display content dynamically, by integrating logical operators and variables into HTML. These files are populated once the user requests one of the sites.
+- `instance/`: Directory containing the instance configuration, which is not committed to version control. This is where the database file and user uploads are stored.
+- `tests/`: Directory containing simple integration tests for the application.
+- `.flaskenv`: Contains the environment variables for the application.
 - `config.py`: Contains the configuration for the application.
-- `pyproject.toml`: Contains the dependencies for the application.
+- `pyproject.toml`: Contains the application dependencies and their configuration.
 - `socialinsecurity.py`: The entry point for the application.
 
 ## Usage
@@ -77,20 +85,20 @@ Run the following command to start the Flask application in debug mode:
 pdm run flask --debug run
 ```
 
-You should now be able to access the application through your web browser by accessing [localhost:5000](http://localhost:5000) in the address bar.
+You should now be able to access the application through your web browser by entering [localhost:5000](http://localhost:5000) in the address bar.
 
 ### Adding dependencies
 To install a new dependency, run the following command:
 
 ```sh
-pdm add <package>
+pdm add <package-name>
 ```
 
 ### Removing dependencies
 To remove a dependency, run the following command:
 
 ```sh
-pdm remove <package>
+pdm remove <package-name>
 ```
 
 ### Updating dependencies
@@ -112,6 +120,8 @@ pdm update
 - [Flask-WTF documentation](https://flask-wtf.readthedocs.io/)
 - [Flask-Login documentation](https://flask-login.readthedocs.io/)
 - [Flask-Bcrypt documentation](https://flask-bcrypt.readthedocs.io/)
+- [SQLite3 documentation](https://docs.python.org/3/library/sqlite3.html)
+- [Pathlib documentation](https://docs.python.org/3/library/pathlib.html)
 - [PDM documentation](https://daobook.github.io/pdm/)
 
 ## Questions
