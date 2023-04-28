@@ -14,9 +14,9 @@ from __future__ import annotations
 
 import os
 import sqlite3
-from typing import Any, Optional, cast
+from typing import Any, Optional
 
-from flask import Flask, current_app
+from flask import Flask, current_app, g
 
 
 class SQLite3:
@@ -44,22 +44,29 @@ class SQLite3:
 
     def init_app(self, app: Flask, path: Optional[str] = None) -> None:
         """Initializes the application with the extension."""
-        self._path = path or cast(str, app.config.setdefault("SQLITE3_DATABASE", "sqlite3.db"))
-        self._connection: Optional[sqlite3.Connection] = None
+        if not hasattr(app, "extensions"):
+            app.extensions = {}
 
-        self._register(app)
+        if "sqlite3" not in app.extensions:
+            app.extensions["sqlite3"] = self
+        else:
+            raise RuntimeError("Flask extension already initialized")
+
+        if "SQLITE3_DATABASE" not in app.config:
+            app.config["SQLITE3_DATABASE"] = path or "sqlite3.db"
+
         with app.app_context():
             self._init_database()
-        app.before_request(self._open_connection)
         app.teardown_appcontext(self._close_connection)
 
     @property
     def connection(self) -> sqlite3.Connection:
         """Returns the connection to the SQLite3 database."""
-        if not self._connection:
-            self._connection = sqlite3.connect(self._path)
-            self.connection.row_factory = sqlite3.Row
-        return self._connection
+        connection = getattr(g, "_sqlite3_connection", None)
+        if connection is None:
+            connection = g._sqlite3_connection = sqlite3.connect(current_app.config["SQLITE3_DATABASE"])
+            connection.row_factory = sqlite3.Row
+        return connection
 
     def query(self, query: str, one: bool = False) -> Any:
         """Queries the database and returns the result.'
@@ -84,26 +91,13 @@ class SQLite3:
 
     # TODO: Add more specific query methods to simplify code
 
-    def _register(self, app: Flask) -> None:
-        if not hasattr(app, "extensions"):
-            app.extensions = {}
-
-        if "sqlite3" not in app.extensions:
-            app.extensions["sqlite3"] = self
-        else:
-            raise RuntimeError("Flask extension already initialized")
-
     def _init_database(self) -> None:
-        if not os.path.exists(current_app.instance_path + self._path):
+        if not os.path.exists(current_app.instance_path + current_app.config["SQLITE3_DATABASE"]):
             with current_app.open_resource("schema.sql", mode="r") as file:
                 self.connection.executescript(file.read())
                 self.connection.commit()
 
-    def _open_connection(self) -> None:
-        if not self._connection:
-            self._connection = sqlite3.connect(self._path)
-            self.connection.row_factory = sqlite3.Row
-
     def _close_connection(self, exception: Optional[BaseException] = None) -> None:
-        if self._connection:
-            self._connection = self._connection.close()
+        connection = getattr(g, "_sqlite3_connection", None)
+        if connection is not None:
+            connection.close()
