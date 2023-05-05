@@ -7,7 +7,7 @@ It also contains the SQL queries used for communicating with the database.
 import os
 from datetime import datetime
 
-from flask import flash, redirect, render_template, url_for
+from flask import flash, redirect, render_template, send_from_directory, url_for
 
 from app import app, sqlite
 from app.forms import CommentsForm, FriendsForm, IndexForm, PostForm, ProfileForm
@@ -61,10 +61,10 @@ def stream(username: str):
     form = PostForm()
     user = sqlite.query('SELECT * FROM Users WHERE username="{}";'.format(username), one=True)
 
-    if form.is_submitted():
-        if form.image.data:
-            path = os.path.join(app.config["UPLOAD_PATH"], form.image.data.filename)
-            form.image.data.save(path)
+    if post_form.is_submitted():
+        if post_form.image.data:
+            path = os.path.join(app.instance_path, app.config["UPLOADS_FOLDER_PATH"], post_form.image.data.filename)
+            post_form.image.data.save(path)
 
         sqlite.query(
             'INSERT INTO Posts (u_id, content, image, creation_time) VALUES({}, "{}", "{}", \'{}\');'.format(
@@ -181,3 +181,9 @@ def profile(username: str):
         one=True,
     )
     return render_template("profile.html.j2", title="Profile", username=username, user=user, form=form)
+
+
+@app.route("/uploads/<string:filename>")
+def uploads(filename):
+    """Provides an endpoint for serving uploaded files."""
+    return send_from_directory(os.path.join(app.instance_path, app.config["UPLOADS_FOLDER_PATH"]), filename)

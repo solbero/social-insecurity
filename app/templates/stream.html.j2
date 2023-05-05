@@ -29,7 +29,8 @@
             </div>
             <div class="card-body">
               <p class="card-text">{{ post.content }}</p>
-              {% if post.image %}<img src="{{ '/static/uploads/' + post.image }}" class="img-fluid mb-2">{% endif %}
+              {% if post.image %}<img src="{{ url_for('uploads', filename=post.image) }}"
+     class="img-fluid mb-3">{% endif %}
               <a href={{ url_for('comments', username=username, post_id=post.id) }}><span class="fa fa-comment me-1" aria-hidden="true"></span>Comments ({{ post.cc }})</a>
             </div>
           </div>

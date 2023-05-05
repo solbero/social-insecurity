@@ -27,11 +27,13 @@ sqlite = SQLite3(app)
 # TODO: The CSRF protection is not working, I should probably fix that
 # csrf = CSRFProtect(app)
 
-
+# Create the upload folder in the instance folder if it does not exist
 with app.app_context():
-    if not os.path.exists(app.config["UPLOAD_PATH"]):
-        os.makedirs(app.config["UPLOAD_PATH"])
-
+    if not os.path.exists(app.instance_path):
+        os.makedirs(app.instance_path)
+    upload_path = os.path.join(app.instance_path, app.config["UPLOADS_FOLDER_PATH"])
+    if not os.path.exists(upload_path):
+        os.makedirs(upload_path)
 
 # Import the routes after the app is configured
 from app import routes  # noqa: E402,F401

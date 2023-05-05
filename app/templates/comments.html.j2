@@ -14,8 +14,7 @@
           </div>
           <div class="card-body">
             <p class="card-text">{{ post.content }}</p>
-            {% if post.image %}<img src="{{ '/static/uploads/' + post.image }}" class="img-fluid mb-2">{% endif %}
-            <h4 class="card-text mb-3">Comments</h4>
+                {% if post.image %}<img src="{{ url_for('uploads', filename=post.image) }}"
             <form action="" method="post" novalidate>
               <div class="mb-3">{{ form.comment(class_="form-control") }}</div>
               <div class="mb-3">{{ form.submit(class_="btn btn-primary") }}</div>

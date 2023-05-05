@@ -50,10 +50,16 @@ class SQLite3:
         if "sqlite3" not in app.extensions:
             app.extensions["sqlite3"] = self
         else:
-            raise RuntimeError("Flask extension already initialized")
+            raise RuntimeError("Flask SQLite3 extension already initialized")
 
-        if "SQLITE3_DATABASE" not in app.config:
-            app.config["SQLITE3_DATABASE"] = path or "sqlite3.db"
+        if path:
+            app.config["SQLITE3_DATABASE_PATH"] = path
+
+        if not app.config["SQLITE3_DATABASE_PATH"]:
+            app.config["SQLITE3_DATABASE_PATH"] = "sqlite3.db"
+
+        if app.config["SQLITE3_DATABASE_PATH"] != ":memory:":
+            app.config["SQLITE3_DATABASE_PATH"] = os.path.join(app.instance_path, app.config["SQLITE3_DATABASE_PATH"])
 
         with app.app_context():
             self._init_database()
@@ -62,29 +68,25 @@ class SQLite3:
     @property
     def connection(self) -> sqlite3.Connection:
         """Returns the connection to the SQLite3 database."""
-        connection = getattr(g, "_sqlite3_connection", None)
+        connection = getattr(g, "flask_sqlite3_connection", None)
         if connection is None:
-            connection = g._sqlite3_connection = sqlite3.connect(current_app.config["SQLITE3_DATABASE"])
+            connection = g.flask_sqlite3_connection = sqlite3.connect(current_app.config["SQLITE3_DATABASE_PATH"])
             connection.row_factory = sqlite3.Row
         return connection
 
-    def query(self, query: str, one: bool = False) -> Any:
+    def query(self, query: str, one: bool = False, *args) -> Any:
         """Queries the database and returns the result.'
 
         params:
             query: The SQL query to execute.
             one: Whether to return a single row or a list of rows.
+            args: Additional arguments to pass to the query.
 
         returns: A single row, a list of rows or None.
 
         """
-        cursor = self.connection.execute(query)
-
-        if one:
-            response = cursor.fetchone()
-        else:
-            response = cursor.fetchall()
-
+        cursor = self.connection.execute(query, args)
+        response = cursor.fetchone() if one else cursor.fetchall()
         cursor.close()
         self.connection.commit()
         return response
@@ -92,12 +94,15 @@ class SQLite3:
     # TODO: Add more specific query methods to simplify code
 
     def _init_database(self) -> None:
-        if not os.path.exists(current_app.instance_path + current_app.config["SQLITE3_DATABASE"]):
+        if not os.path.exists(current_app.instance_path):
+            os.makedirs(current_app.instance_path)
+
+        if not os.path.exists(current_app.config["SQLITE3_DATABASE_PATH"]):
             with current_app.open_resource("schema.sql", mode="r") as file:
                 self.connection.executescript(file.read())
                 self.connection.commit()
 
     def _close_connection(self, exception: Optional[BaseException] = None) -> None:
-        connection = getattr(g, "_sqlite3_connection", None)
+        connection = getattr(g, "flask_sqlite3_connection", None)
         if connection is not None:
             connection.close()
