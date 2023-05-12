@@ -156,15 +156,26 @@ def friends(username: str):
             WHERE username = '{friends_form.username.data}';
             """
         friend = sqlite.query(get_friend, one=True)
+        get_friends = f"""
+            SELECT f_id
+            FROM Friends
+            WHERE u_id = {user["id"]};
+            """
+        friends = sqlite.query(get_friends)
 
         if friend is None:
-            flash("User does not exist", category="warning")
+            flash("User does not exist!", category="warning")
+        elif friend["id"] == user["id"]:
+            flash("You cannot be friends with yourself!", category="warning")
+        elif friend["id"] in [friend["f_id"] for friend in friends]:
+            flash("You are already friends with this user!", category="warning")
         else:
             insert_friend = f"""
                 INSERT INTO Friends (u_id, f_id)
                 VALUES ({user["id"]}, {friend["id"]});
                 """
             sqlite.query(insert_friend)
+            flash("Friend successfully added!", category="success")
 
     get_friends = f"""
         SELECT *
