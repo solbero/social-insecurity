@@ -171,6 +171,9 @@ cython_debug/
 # Built Visual Studio Code Extensions
 *.vsix
 
+# Workspace for Visual Studio Code
+social-insecurity.code-workspace
+
 
 # DATABASE
 
