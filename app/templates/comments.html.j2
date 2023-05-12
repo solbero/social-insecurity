@@ -2,36 +2,46 @@
 {% block content %}
   <div class="container-flex justify-content-center">
     <div class="row justify-content-center">
-      <!-- Comment card -->
+      <!-- Comment creation card -->
       <div class="col-sm-12 col-lg-6">
         <div class="card mb-3">
-          <div class="card-header">
-            <div class="row align-items-center">
-              <span class="fa fa-user col-1" aria-hidden="true"></span>
-              <span class="col-3 text-left">{{ post.username }}</span>
-              <span class="col-8 text-right">{{ post.creation_time }}</span>
-            </div>
-          </div>
+          <!-- Post card -->
           <div class="card-body">
-            <p class="card-text">{{ post.content }}</p>
+            <h4 class="card-title mb-3">Add a comment</h4>
+            <div class="card mb-3">
+              <div class="card-header">
+                <div class="row align-items-center">
+                  <a class="col-4" href={{ url_for('profile', username=post.username) }}><span class="fa fa-user me-1" aria-hidden="true"></span>{{ post.username }}</a>
+                  <span class="col-8 text-right">{{ post.creation_time }}</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="card-text">{{ post.content }}</p>
                 {% if post.image %}<img src="{{ url_for('uploads', filename=post.image) }}"
+     class="img-fluid mb-3">{% endif %}
+              </div>
+            </div>
+            <!-- Comment creation card cont -->
             <form action="" method="post" novalidate>
               <div class="mb-3">{{ form.comment(class_="form-control") }}</div>
-              <div class="mb-3">{{ form.submit(class_="btn btn-primary") }}</div>
+              <div>{{ form.submit(class_="btn btn-primary") }}</div>
             </form>
-            <ul class="list-group list-group-flush">
-              {% for comment in comments %}
-                <li class="list-group-item">
-                  <div class="row align-items-center">
-                    <a class="col-4" href={{ url_for('profile', username=comment.username) }}><span class="fa fa-user me-1" aria-hidden="true"></span>{{ comment.username }}</a>
-                    <span class="col-8 text-right">{{ post.creation_time }}</span>
-                  </div>
-                  <p>{{ comment.comment }}</p>
-                </li>
-              {% endfor %}
-            </ul>
           </div>
         </div>
+        <!-- Comment feed cards -->
+        {% for comment in comments %}
+          <div class="card mb-3">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <a class="col-4" href={{ url_for('profile', username=comment.username) }}><span class="fa fa-user me-1" aria-hidden="true"></span>{{ comment.username }}</a>
+                <span class="col-8 text-right">{{ comment.creation_time }}</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <p class="card-text">{{ comment.comment }}</p>
+            </div>
+          </div>
+        {% endfor %}
       </div>
     </div>
   </div>

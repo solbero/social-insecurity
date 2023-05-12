@@ -117,8 +117,8 @@ def comments(username: str, post_id: int):
 
     get_post = f"""
         SELECT *
-        FROM Posts
-        WHERE id = {post_id};
+        FROM Posts AS p JOIN Users AS u ON p.u_id = u.id
+        WHERE p.id = {post_id};
         """
     get_comments = f"""
         SELECT DISTINCT *
