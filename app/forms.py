@@ -15,6 +15,7 @@ Example:
         username = form.username.data
     """
 
+from datetime import datetime
 from typing import cast
 
 from flask_wtf import FlaskForm
@@ -82,5 +83,5 @@ class ProfileForm(FlaskForm):
     music = StringField(label="Favorite song", render_kw={"placeholder": "Favorite song"})
     movie = StringField(label="Favorite movie", render_kw={"placeholder": "Favorite movie"})
     nationality = StringField(label="Nationality", render_kw={"placeholder": "Your nationality"})
-    birthday = DateField(label="Birthday")
+    birthday = DateField(label="Birthday", default=datetime.now())
     submit = SubmitField(label="Update Profile")

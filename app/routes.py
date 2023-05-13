@@ -4,7 +4,6 @@ This file contains the routes for the application. It is imported by the app pac
 It also contains the SQL queries used for communicating with the database.
 """
 
-from datetime import datetime
 from pathlib import Path
 
 from flask import flash, redirect, render_template, send_from_directory, url_for
@@ -77,7 +76,7 @@ def stream(username: str):
 
         insert_post = f"""
             INSERT INTO Posts (u_id, content, image, creation_time)
-            VALUES ({user["id"]}, '{post_form.content.data}', '{post_form.image.data.filename}', '{datetime.now()}');
+            VALUES ({user["id"]}, '{post_form.content.data}', '{post_form.image.data.filename}', CURRENT_TIMESTAMP);
             """
         sqlite.query(insert_post)
         return redirect(url_for("stream", username=username))
@@ -111,7 +110,7 @@ def comments(username: str, post_id: int):
     if comments_form.is_submitted():
         insert_comment = f"""
             INSERT INTO Comments (p_id, u_id, comment, creation_time)
-            VALUES ({post_id}, {user["id"]}, '{comments_form.comment.data}', '{datetime.now()}');
+            VALUES ({post_id}, {user["id"]}, '{comments_form.comment.data}', CURRENT_TIMESTAMP);
             """
         sqlite.query(insert_comment)
 
