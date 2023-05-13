@@ -1,6 +1,7 @@
 """Provides the app package for the Social Insecurity application. The package contains the Flask app and all of the extensions and routes."""
 
-import os
+from pathlib import Path
+from typing import cast
 
 from flask import Flask
 
@@ -27,13 +28,14 @@ sqlite = SQLite3(app)
 # TODO: The CSRF protection is not working, I should probably fix that
 # csrf = CSRFProtect(app)
 
-# Create the upload folder in the instance folder if it does not exist
+# Create the instance and upload folder if they do not exist
 with app.app_context():
-    if not os.path.exists(app.instance_path):
-        os.makedirs(app.instance_path)
-    upload_path = os.path.join(app.instance_path, app.config["UPLOADS_FOLDER_PATH"])
-    if not os.path.exists(upload_path):
-        os.makedirs(upload_path)
+    instance_path = Path(app.instance_path)
+    if not instance_path.exists():
+        instance_path.mkdir(parents=True, exist_ok=True)
+    upload_path = instance_path / cast(str, app.config["UPLOADS_FOLDER_PATH"])
+    if not upload_path.exists():
+        upload_path.mkdir(parents=True, exist_ok=True)
 
 # Import the routes after the app is configured
 from app import routes  # noqa: E402,F401

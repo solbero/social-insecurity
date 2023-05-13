@@ -12,9 +12,10 @@ Example:
 
 from __future__ import annotations
 
-import os
 import sqlite3
-from typing import Any, Optional
+from os import PathLike
+from pathlib import Path, PurePath
+from typing import Any, Optional, cast
 
 from flask import Flask, current_app, g
 
@@ -38,11 +39,11 @@ class SQLite3:
         # db.query("INSERT INTO Users (name, email) VALUES ('John', 'test@test.net');")
     """
 
-    def __init__(self, app: Optional[Flask] = None, path: Optional[str] = None) -> None:
+    def __init__(self, app: Optional[Flask] = None, path: Optional[PathLike | str] = None) -> None:
         if app is not None:
             self.init_app(app, path)
 
-    def init_app(self, app: Flask, path: Optional[str] = None) -> None:
+    def init_app(self, app: Flask, path: Optional[PathLike | str] = None) -> None:
         """Initializes the application with the extension."""
         if not hasattr(app, "extensions"):
             app.extensions = {}
@@ -52,14 +53,15 @@ class SQLite3:
         else:
             raise RuntimeError("Flask SQLite3 extension already initialized")
 
-        if path:
-            app.config["SQLITE3_DATABASE_PATH"] = path
-
-        if not app.config["SQLITE3_DATABASE_PATH"]:
-            app.config["SQLITE3_DATABASE_PATH"] = "sqlite3.db"
-
-        if app.config["SQLITE3_DATABASE_PATH"] != ":memory:":
-            app.config["SQLITE3_DATABASE_PATH"] = os.path.join(app.instance_path, app.config["SQLITE3_DATABASE_PATH"])
+        if path == ":memory:" or app.config.get("SQLITE3_DATABASE_PATH") == ":memory:":
+            self._path = PurePath(":memory:")
+        else:
+            if path:
+                self._path = Path(app.instance_path) / path
+            elif "SQLITE3_DATABASE_PATH" not in app.config:
+                self._path = Path(app.instance_path) / "sqlite3.db"
+            else:
+                self._path = Path(app.instance_path) / app.config["SQLITE3_DATABASE_PATH"]
 
         with app.app_context():
             self._init_database()
@@ -68,11 +70,11 @@ class SQLite3:
     @property
     def connection(self) -> sqlite3.Connection:
         """Returns the connection to the SQLite3 database."""
-        connection = getattr(g, "flask_sqlite3_connection", None)
-        if connection is None:
-            connection = g.flask_sqlite3_connection = sqlite3.connect(current_app.config["SQLITE3_DATABASE_PATH"])
-            connection.row_factory = sqlite3.Row
-        return connection
+        conn = getattr(g, "flask_sqlite3_connection", None)
+        if conn is None:
+            conn = g.flask_sqlite3_connection = sqlite3.connect(self._path)
+            conn.row_factory = sqlite3.Row
+        return conn
 
     def query(self, query: str, one: bool = False, *args) -> Any:
         """Queries the database and returns the result.'
@@ -94,15 +96,18 @@ class SQLite3:
     # TODO: Add more specific query methods to simplify code
 
     def _init_database(self) -> None:
-        if not os.path.exists(current_app.instance_path):
-            os.makedirs(current_app.instance_path)
+        if self._path == ":memory:":
+            self._create_database()
+        elif not Path(self._path).exists():
+            Path(self._path).parent.mkdir(parents=True, exist_ok=True)
+            self._create_database()
 
-        if not os.path.exists(current_app.config["SQLITE3_DATABASE_PATH"]):
-            with current_app.open_resource("schema.sql", mode="r") as file:
-                self.connection.executescript(file.read())
-                self.connection.commit()
+    def _create_database(self) -> None:
+        with current_app.open_resource("schema.sql", mode="r") as file:
+            self.connection.executescript(file.read())
+            self.connection.commit()
 
     def _close_connection(self, exception: Optional[BaseException] = None) -> None:
-        connection = getattr(g, "flask_sqlite3_connection", None)
-        if connection is not None:
-            connection.close()
+        conn = cast(sqlite3.Connection, getattr(g, "flask_sqlite3_connection", None))
+        if conn is not None:
+            conn.close()

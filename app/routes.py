@@ -4,8 +4,8 @@ This file contains the routes for the application. It is imported by the app pac
 It also contains the SQL queries used for communicating with the database.
 """
 
-import os
 from datetime import datetime
+from pathlib import Path
 
 from flask import flash, redirect, render_template, send_from_directory, url_for
 
@@ -72,7 +72,7 @@ def stream(username: str):
 
     if post_form.is_submitted():
         if post_form.image.data:
-            path = os.path.join(app.instance_path, app.config["UPLOADS_FOLDER_PATH"], post_form.image.data.filename)
+            path = Path(app.instance_path) / app.config["UPLOADS_FOLDER_PATH"] / post_form.image.data.filename
             post_form.image.data.save(path)
 
         insert_post = f"""
@@ -219,4 +219,4 @@ def profile(username: str):
 @app.route("/uploads/<string:filename>")
 def uploads(filename):
     """Provides an endpoint for serving uploaded files."""
-    return send_from_directory(os.path.join(app.instance_path, app.config["UPLOADS_FOLDER_PATH"]), filename)
+    return send_from_directory(Path(app.instance_path) / app.config["UPLOADS_FOLDER_PATH"], filename)
