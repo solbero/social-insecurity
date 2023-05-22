@@ -96,6 +96,7 @@ class SQLite3:
     # TODO: Add more specific query methods to simplify code
 
     def _init_database(self) -> None:
+        """Initializes the database if it does not exist yet."""
         if self._path == ":memory:":
             self._create_database()
         elif not Path(self._path).exists():
@@ -103,11 +104,13 @@ class SQLite3:
             self._create_database()
 
     def _create_database(self) -> None:
+        """Creates the database from the schema."""
         with current_app.open_resource("schema.sql", mode="r") as file:
             self.connection.executescript(file.read())
             self.connection.commit()
 
     def _close_connection(self, exception: Optional[BaseException] = None) -> None:
+        """Closes the connection to the database."""
         conn = cast(sqlite3.Connection, getattr(g, "flask_sqlite3_connection", None))
         if conn is not None:
             conn.close()
