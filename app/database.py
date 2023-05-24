@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import sqlite3
 from os import PathLike
-from pathlib import Path, PurePath
+from pathlib import Path
 from typing import Any, Optional, cast
 
 from flask import Flask, current_app, g
@@ -54,14 +54,14 @@ class SQLite3:
             raise RuntimeError("Flask SQLite3 extension already initialized")
 
         if path == ":memory:" or app.config.get("SQLITE3_DATABASE_PATH") == ":memory:":
-            self._path = PurePath(":memory:")
+            raise ValueError("Cannot use in-memory database with Flask SQLite3 extension")
+
+        if path:
+            self._path = Path(app.instance_path) / path
+        elif "SQLITE3_DATABASE_PATH" in app.config:
+            self._path = Path(app.instance_path) / app.config["SQLITE3_DATABASE_PATH"]
         else:
-            if path:
-                self._path = Path(app.instance_path) / path
-            elif "SQLITE3_DATABASE_PATH" not in app.config:
-                self._path = Path(app.instance_path) / "sqlite3.db"
-            else:
-                self._path = Path(app.instance_path) / app.config["SQLITE3_DATABASE_PATH"]
+            self._path = Path(app.instance_path) / "sqlite3.db"
 
         with app.app_context():
             self._init_database()
@@ -97,17 +97,11 @@ class SQLite3:
 
     def _init_database(self) -> None:
         """Initializes the database if it does not exist yet."""
-        if self._path == ":memory:":
-            self._create_database()
-        elif not Path(self._path).exists():
-            Path(self._path).parent.mkdir(parents=True, exist_ok=True)
-            self._create_database()
-
-    def _create_database(self) -> None:
-        """Creates the database from the schema."""
-        with current_app.open_resource("schema.sql", mode="r") as file:
-            self.connection.executescript(file.read())
-            self.connection.commit()
+        if not self._path.exists():
+            self._path.parent.mkdir(parents=True, exist_ok=True)
+            with current_app.open_resource("schema.sql", mode="r") as file:
+                self.connection.executescript(file.read())
+                self.connection.commit()
 
     def _close_connection(self, exception: Optional[BaseException] = None) -> None:
         """Closes the connection to the database."""
