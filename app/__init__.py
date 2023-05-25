@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Instantiate the sqlite database extension
-sqlite = SQLite3(app)
+sqlite = SQLite3(app, schema="schema.sql")
 
 # TODO: Handle login management better, maybe with flask_login?
 # login = LoginManager(app)

@@ -39,12 +39,39 @@ class SQLite3:
         # db.query("INSERT INTO Users (name, email) VALUES ('John', 'test@test.net');")
     """
 
-    def __init__(self, app: Optional[Flask] = None, path: Optional[PathLike | str] = None) -> None:
-        if app is not None:
-            self.init_app(app, path)
+    def __init__(
+        self,
+        app: Optional[Flask] = None,
+        *,
+        path: Optional[PathLike | str] = None,
+        schema: Optional[PathLike | str] = None,
+    ) -> None:
+        """Initializes the extension.
 
-    def init_app(self, app: Flask, path: Optional[PathLike | str] = None) -> None:
-        """Initializes the application with the extension."""
+        params:
+            app: The Flask application to initialize the extension with.
+            path (optional): The path to the database file. Is relative to the instance folder.
+            schema (optional): The path to the schema file. Is relative to the application root folder.
+
+        """
+        if app is not None:
+            self.init_app(app, path=path, schema=schema)
+
+    def init_app(
+        self,
+        app: Flask,
+        *,
+        path: Optional[PathLike | str] = None,
+        schema: Optional[PathLike | str] = None,
+    ) -> None:
+        """Initializes the extension.
+
+        params:
+            app: The Flask application to initialize the extension with.
+            path (optional): The path to the database file. Is relative to the instance folder.
+            schema (optional): The path to the schema file. Is relative to the application root folder.
+
+        """
         if not hasattr(app, "extensions"):
             app.extensions = {}
 
@@ -63,8 +90,12 @@ class SQLite3:
         else:
             self._path = Path(app.instance_path) / "sqlite3.db"
 
-        with app.app_context():
-            self._init_database()
+        if not self._path.exists():
+            self._path.parent.mkdir(parents=True, exist_ok=True)
+
+        if schema:
+            with app.app_context():
+                self._init_database(schema)
         app.teardown_appcontext(self._close_connection)
 
     @property
@@ -95,13 +126,11 @@ class SQLite3:
 
     # TODO: Add more specific query methods to simplify code
 
-    def _init_database(self) -> None:
-        """Initializes the database if it does not exist yet."""
-        if not self._path.exists():
-            self._path.parent.mkdir(parents=True, exist_ok=True)
-            with current_app.open_resource("schema.sql", mode="r") as file:
-                self.connection.executescript(file.read())
-                self.connection.commit()
+    def _init_database(self, schema: PathLike | str) -> None:
+        """Initializes the database with the supplied schema if it does not exist yet."""
+        with current_app.open_resource(str(schema), mode="r") as file:
+            self.connection.executescript(file.read())
+            self.connection.commit()
 
     def _close_connection(self, exception: Optional[BaseException] = None) -> None:
         """Closes the connection to the database."""
