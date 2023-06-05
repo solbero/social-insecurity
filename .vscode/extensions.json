@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "samuelcolvin.jinjahtml",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "monosans.djlint",
+        "ms-python.python",
+        "charliermarsh.ruff"
+    ]
+}
