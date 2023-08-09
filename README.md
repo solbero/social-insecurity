@@ -15,17 +15,17 @@ This project uses PDM as a package manager, which is similar to pip, but with mo
 
 To install PDM for your operating system, follow the instructions on the [PDM website](https://daobook.github.io/pdm/#installation). You might have to log out and back in again for the installation to take effect and the `pdm` command to become available.
 
+This project is configured to use VSCode as the IDE, but you can use any IDE you want. The configuration for VSCode includes extension recommendations and some default settings for this project. You can install the recommended extensions by opening the command palette (Ctrl+Shift+P) and entering the command `Extensions: Show Recommended Extensions`.
+
 ### Installing
 
-Within the root folder of this application, there is a `pyproject.toml` file, which lists all the Python requirements necessary to run the application.
-
-The following command will install all required production and development dependencies in a virtual environment within the project’s root folder:
+Within the root folder of this application, there is a `pyproject.toml` file, which lists all the Python dependencies necessary to run the application. To install all of the required dependencies, open a terminal in the project's root folder and run the command:
 
 ```sh
 pdm install
 ```
 
-Modern IDEs, such as Visual Studio Code, PyCharm, etc., should automatically detect the virtual environment created by PDM within the project’s root folder and use it for the project. If not, you can manually select the virtual environment by following the instructions found on your IDE’s support pages.
+This will install all required production and development dependencies, using PDM, in a virtual environment within the project’s root folder. Modern IDEs, such as Visual Studio Code, PyCharm, etc., should automatically detect the virtual environment created by PDM and use it for this project. If not, you can manually select the virtual environment by following the instructions found on your IDE’s support pages.
 
 ### Structure
 
@@ -53,6 +53,7 @@ social-insecurity
 ├── tests
 │   └── test_routes.py
 ├── .flaskenv
+├── .gitignore
 ├── LICENSE.md
 ├── README.md
 ├── config.py
@@ -70,9 +71,10 @@ The most important files and directories:
   - `app/schema.sql`: Defines the database tables, and their relations.
   - `app/static/`: Directory containing static content. Files such as CSS and JavaScript can be stored here and accessed from anywhere in the application.
   - `app/templates/`: Directory containing all the HTML files in a template format. This allows the application to display content dynamically, by integrating logical operators and variables into HTML. These files are populated once the user requests one of the sites.
-- `instance/`: Directory containing the instance configuration, which is not committed to version control. This is where the database file and user uploads are stored.
+- `instance/`: Directory containing the instance files, which is not committed to version control. This is where the database file and user uploads are stored.
 - `tests/`: Directory containing simple integration tests for the application.
 - `.flaskenv`: Contains the environment variables for the application.
+- `.gitignore`: Contains the files and directories that should not be committed to version control.
 - `config.py`: Contains the configuration for the application.
 - `pyproject.toml`: Contains the application dependencies and their configuration.
 - `socialinsecurity.py`: The entry point for the application.
@@ -85,7 +87,7 @@ Run the following command to start the Flask application in debug mode:
 pdm run flask --debug run
 ```
 
-You should now be able to access the application through your web browser by entering [localhost:5000](http://localhost:5000) in the address bar.
+You should now be able to access the application through your web browser by entering [127.0.0.1:5000](http://127.0.0.1:5000) in the address bar.
 
 ### Adding dependencies
 To install a new dependency, run the following command:
