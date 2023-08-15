@@ -36,6 +36,7 @@ social-insecurity
 │   │   └── css
 │   │       └── general.css
 │   ├── templates
+│   │   ├── alert.html.j2
 │   │   ├── base.html.j2
 │   │   ├── comments.html.j2
 │   │   ├── friends.html.j2
@@ -43,6 +44,7 @@ social-insecurity
 │   │   ├── profile.html.j2
 │   │   └── stream.html.j2
 │   ├── __init__.py
+│   ├── config.py
 │   ├── database.py
 │   ├── forms.py
 │   ├── routes.py
@@ -56,7 +58,6 @@ social-insecurity
 ├── .gitignore
 ├── LICENSE.md
 ├── README.md
-├── config.py
 ├── pdm.lock
 ├── pyproject.toml
 └── socialinsecurity.py
@@ -64,18 +65,18 @@ social-insecurity
 
 The most important files and directories:
 - `app/`: This directory is the root of the application, this is from where the pages are served.
+  - `app/static/`: Directory containing static content. Files such as CSS and JavaScript can be stored here and accessed from anywhere in the application.
+  - `app/templates/`: Directory containing all the HTML files in a template format. This allows the application to display content dynamically, by integrating logical operators and variables into HTML. These files are populated once the user requests one of the sites.
   - `app/__init__.py`: Initializes the application.
+  - `app/config.py`: Contains the configuration for the application.
   - `app/database.py`: Contains the database connection and functions for interacting with the database.
   - `app/forms.py`: Defines the forms that the users will use to input information.
   - `app/routes.py`: Implements the routing between different pages, handles form input and database calls.
   - `app/schema.sql`: Defines the database tables, and their relations.
-  - `app/static/`: Directory containing static content. Files such as CSS and JavaScript can be stored here and accessed from anywhere in the application.
-  - `app/templates/`: Directory containing all the HTML files in a template format. This allows the application to display content dynamically, by integrating logical operators and variables into HTML. These files are populated once the user requests one of the sites.
 - `instance/`: Directory containing the instance files, which is not committed to version control. This is where the database file and user uploads are stored.
 - `tests/`: Directory containing simple integration tests for the application.
 - `.flaskenv`: Contains the environment variables for the application.
 - `.gitignore`: Contains the files and directories that should not be committed to version control.
-- `config.py`: Contains the configuration for the application.
 - `pyproject.toml`: Contains the application dependencies and their configuration.
 - `socialinsecurity.py`: The entry point for the application.
 
