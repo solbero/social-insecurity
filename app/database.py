@@ -107,7 +107,7 @@ class SQLite3:
             conn.row_factory = sqlite3.Row
         return conn
 
-    def query(self, query: str, one: bool = False, *args) -> Any:
+    def query(self, query: str, *args, one: bool = False) -> Any:
         """Queries the database and returns the result.'
 
         params:
