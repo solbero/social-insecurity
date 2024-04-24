@@ -4,7 +4,7 @@ This file is used to set the configuration for the application.
 
 Example:
     from flask import Flask
-    from app.config import Config
+    from social_insecurity.config import Config
 
     app = Flask(__name__)
     app.config.from_object(Config)

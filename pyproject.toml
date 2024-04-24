@@ -1,52 +1,48 @@
-[project]
+[tool.poetry]
 name = "social-insecurity"
 version = "1.0.0"
-description = ""
-authors = [{ name = "solbero", email = "njosol@pm.me" }]
-dependencies = [
-    "flask[dotenv]>=2.3.0",
-    "Flask-WTF>=1.1.0",
-]
-requires-python = ">=3.9"
-license = { text = "MIT" }
+description = "A website written in Flask for practicing patching security flaws and bugs"
+authors = ["solbero <njosol@pm.me>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = {extras = ["dotenv"], version = "^3.0.0"}
+Flask-WTF = "^1.2.0"
+pytest = "^8.0.0"
+
+[tool.poetry.group.dev.dependencies]
+djlint = "^1.34.0"
+tox = "^4.0.0"
+ruff = "^0.4.0"
 
 [build-system]
-requires = ["pdm-pep517>=1.0.0"]
-build-backend = "pdm.pep517.api"
-
-[tool.pdm]
-[tool.pdm.dev-dependencies]
-dev = [
-    "black>=23.7.0",
-    "djlint>=1.32.0",
-    "pytest>=7.4.0",
-    "tox>=4.7.0",
-    "ruff>=0.0.283",
-]
-
-[tool.black]
-line-length = 120
-target-version = ['py39', 'py310', 'py311', 'py312']
-
-[tool.isort]
-profile = "black"
-
-[tool.djlint]
-indent = 2
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.tox]
 legacy_tox_ini = """
-[tox]
-envlist = py39, py310, py311, py312
-isolated_build = true
+    [tox]
+    envlist = py39, py310, py311, py312
+    isolated_build = true
 
-[testenv]
-deps =
-    flask
-    pytest
-commands = pytest {posargs}
+    [testenv]
+    deps =
+        flask
+        pytest
+    commands = pytest {posargs}
 """
 
 [tool.ruff]
 line-length = 120
 target-version = 'py39'
+lint.select=["I"]
+
+[tool.djlint]
+indent = 2
+max_line_length=120
+format_css=true
+format_js=true
+profile="jinja"
+extension="html.j2"

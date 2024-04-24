@@ -1,7 +1,7 @@
 """Provides all forms used in the Social Insecurity application.
 
 This file is used to define all forms used in the application.
-It is imported by the app package.
+It is imported by the social_insecurity package.
 
 Example:
     from flask import Flask

@@ -1,12 +1,12 @@
-"""Provides the app package for the Social Insecurity application. The package contains the Flask app and all of the extensions and routes."""
+"""Provides the social_insecurity package for the Social Insecurity application. The package contains the Flask app and all of the extensions and routes."""
 
 from pathlib import Path
 from typing import cast
 
 from flask import Flask
 
-from app.config import Config
-from app.database import SQLite3
+from social_insecurity.config import Config
+from social_insecurity.database import SQLite3
 
 # from flask_login import LoginManager
 # from flask_bcrypt import Bcrypt
@@ -38,4 +38,4 @@ with app.app_context():
         upload_path.mkdir(parents=True, exist_ok=True)
 
 # Import the routes after the app is configured
-from app import routes  # noqa: E402,F401
+from social_insecurity import routes  # noqa: E402,F401

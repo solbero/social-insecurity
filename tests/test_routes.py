@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from app import app
+from social_insecurity import app
 
 if TYPE_CHECKING:
     from flask import Flask

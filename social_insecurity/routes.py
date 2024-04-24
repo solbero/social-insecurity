@@ -1,6 +1,6 @@
 """Provides all routes for the Social Insecurity application.
 
-This file contains the routes for the application. It is imported by the app package.
+This file contains the routes for the application. It is imported by the social_insecurity package.
 It also contains the SQL queries used for communicating with the database.
 """
 
@@ -8,8 +8,8 @@ from pathlib import Path
 
 from flask import flash, redirect, render_template, send_from_directory, url_for
 
-from app import app, sqlite
-from app.forms import CommentsForm, FriendsForm, IndexForm, PostForm, ProfileForm
+from social_insecurity import app, sqlite
+from social_insecurity.forms import CommentsForm, FriendsForm, IndexForm, PostForm, ProfileForm
 
 
 @app.route("/", methods=["GET", "POST"])
