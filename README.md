@@ -31,7 +31,7 @@ This will install all required production and development dependencies, using PD
 
 ```sh
 social-insecurity
-├── app
+├── social_insecurity
 │   ├── static
 │   │   └── css
 │   │       └── general.css

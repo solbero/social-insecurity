@@ -4,7 +4,7 @@ This extension provides a simple interface to the SQLite3 database.
 
 Example:
     from flask import Flask
-    from app.database import SQLite3
+    from social_insecurity.database import SQLite3
 
     app = Flask(__name__)
     db = SQLite3(app)
@@ -28,7 +28,7 @@ class SQLite3:
 
     Example:
         from flask import Flask
-        from app.database import SQLite3
+        from social_insecurity.database import SQLite3
 
         app = Flask(__name__)
         db = SQLite3(app)
