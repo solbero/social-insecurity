@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from social_insecurity import app
+from social_insecurity import create_app
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -13,20 +13,19 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture(scope="session")
-def test_app() -> Iterator[Flask]:
-    app.config.update(
-        {
-            "SQLITE3_DATABASE": "file::memory:?cache=shared",
-            "TESTING": True,
-            "WTF_CSRF_ENABLED": False,
-        }
-    )
+def app() -> Iterator[Flask]:
+    test_config = {
+        "SQLITE3_DATABASE": "file::memory:?cache=shared",
+        "TESTING": True,
+        "WTF_CSRF_ENABLED": False,
+    }
+    app = create_app(test_config)
     yield app
 
 
 @pytest.fixture()
-def client(test_app: Flask) -> FlaskClient:
-    return test_app.test_client()
+def client(app: Flask) -> FlaskClient:
+    return app.test_client()
 
 
 def test_request_index(client: FlaskClient):
