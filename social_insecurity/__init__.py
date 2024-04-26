@@ -1,4 +1,7 @@
-"""Provides the social_insecurity package for the Social Insecurity application. The package contains the Flask app and all of the extensions and routes."""
+"""Provides the social_insecurity package for the Social Insecurity application.
+
+The package contains the Flask application factory.
+"""
 
 from pathlib import Path
 from shutil import rmtree
@@ -13,39 +16,45 @@ from social_insecurity.database import SQLite3
 # from flask_bcrypt import Bcrypt
 # from flask_wtf.csrf import CSRFProtect
 
-# Instantiate and configure the app
-app = Flask(__name__)
-app.config.from_object(Config)
-
-# Instantiate the sqlite database extension
-sqlite = SQLite3(app, schema="schema.sql")
-
+sqlite = SQLite3()
 # TODO: Handle login management better, maybe with flask_login?
-# login = LoginManager(app)
-
+# login = LoginManager()
 # TODO: The passwords are stored in plaintext, this is not secure at all. I should probably use bcrypt or something
-# bcrypt = Bcrypt(app)
-
+# bcrypt = Bcrypt()
 # TODO: The CSRF protection is not working, I should probably fix that
-# csrf = CSRFProtect(app)
+# csrf = CSRFProtect()
 
 
-@app.cli.command("reset")
-def reset_command() -> None:
-    """Reset the app."""
-    instance_path = Path(current_app.instance_path)
-    if instance_path.exists():
-        rmtree(instance_path)
+def create_app(test_config=None) -> Flask:
+    """Create and configure the Flask application."""
+    app = Flask(__name__)
+    app.config.from_object(Config)
+    if test_config:
+        app.config.from_object(test_config)
+
+    sqlite.init_app(app, schema="schema.sql")
+    # login.init_app(app)
+    # bcrypt.init_app(app)
+    # csrf.init_app(app)
+
+    with app.app_context():
+        create_uploads_folder(app)
+
+    @app.cli.command("reset")
+    def reset_command() -> None:
+        """Reset the app."""
+        instance_path = Path(current_app.instance_path)
+        if instance_path.exists():
+            rmtree(instance_path)
+
+    with app.app_context():
+        import social_insecurity.routes  # noqa: E402,F401
+
+    return app
 
 
-# Create the instance and upload folder if they do not exist
-with app.app_context():
-    instance_path = Path(app.instance_path)
-    if not instance_path.exists():
-        instance_path.mkdir(parents=True, exist_ok=True)
-    upload_path = instance_path / cast(str, app.config["UPLOADS_FOLDER_PATH"])
+def create_uploads_folder(app: Flask) -> None:
+    """Create the instance and upload folders."""
+    upload_path = Path(app.instance_path) / cast(str, app.config["UPLOADS_FOLDER_PATH"])
     if not upload_path.exists():
-        upload_path.mkdir(parents=True, exist_ok=True)
-
-# Import the routes after the app is configured
-from social_insecurity import routes  # noqa: E402,F401
+        upload_path.mkdir(parents=True)
