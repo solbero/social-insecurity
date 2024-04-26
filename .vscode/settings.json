@@ -8,14 +8,11 @@
     "djlint.useVenv": true,
     "djlint.formatJs": true,
     "djlint.formatCss": true,
-    "djlint.enableLinting": true,
     "ruff.importStrategy": "fromEnvironment",
-    "black-formatter.importStrategy": "fromEnvironment",
     "[jinja-html]": {
 		"editor.defaultFormatter": "monosans.djlint"
 	},
 	"[python]": {
-		"editor.defaultFormatter": "ms-python.black-formatter",
-	},
-
+		"editor.defaultFormatter": "charliermarsh.ruff"
+	}
 }
