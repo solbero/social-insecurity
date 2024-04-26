@@ -1,9 +1,10 @@
 """Provides the social_insecurity package for the Social Insecurity application. The package contains the Flask app and all of the extensions and routes."""
 
 from pathlib import Path
+from shutil import rmtree
 from typing import cast
 
-from flask import Flask
+from flask import Flask, current_app
 
 from social_insecurity.config import Config
 from social_insecurity.database import SQLite3
@@ -27,6 +28,15 @@ sqlite = SQLite3(app, schema="schema.sql")
 
 # TODO: The CSRF protection is not working, I should probably fix that
 # csrf = CSRFProtect(app)
+
+
+@app.cli.command("reset")
+def reset_command() -> None:
+    """Reset the app."""
+    instance_path = Path(current_app.instance_path)
+    if instance_path.exists():
+        rmtree(instance_path)
+
 
 # Create the instance and upload folder if they do not exist
 with app.app_context():
