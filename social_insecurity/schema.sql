@@ -1,14 +1,3 @@
--- ---
--- Globals
--- ---
--- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
--- SET FOREIGN_KEY_CHECKS=0;
--- ---
--- Table 'Users'
---
--- ---
-DROP TABLE IF EXISTS [Users];
-
 CREATE TABLE [Users] (
   id INTEGER PRIMARY KEY,
   username VARCHAR,
@@ -23,12 +12,6 @@ CREATE TABLE [Users] (
   birthday DATE DEFAULT 'Unknown'
 );
 
--- ---
--- Table 'Posts'
---
--- ---
-DROP TABLE IF EXISTS [Posts];
-
 CREATE TABLE [Posts](
   id INTEGER PRIMARY KEY,
   u_id INTEGER,
@@ -38,12 +21,6 @@ CREATE TABLE [Posts](
   FOREIGN KEY (u_id) REFERENCES [Users](id)
 );
 
--- ---
--- Table 'Friends'
---
--- ---
-DROP TABLE IF EXISTS [Friends];
-
 CREATE TABLE [Friends](
   u_id INTEGER NOT NULL REFERENCES Users,
   f_id INTEGER NOT NULL REFERENCES Users,
@@ -51,12 +28,6 @@ CREATE TABLE [Friends](
   FOREIGN KEY (u_id) REFERENCES [Users](id),
   FOREIGN KEY (f_id) REFERENCES [Users](id)
 );
-
--- ---
--- Table 'Comments'
---
--- ---
-DROP TABLE IF EXISTS [Comments];
 
 CREATE TABLE [Comments](
   id INTEGER PRIMARY KEY,
@@ -66,4 +37,17 @@ CREATE TABLE [Comments](
   [creation_time] DATETIME,
   FOREIGN KEY (p_id) REFERENCES Posts(id),
   FOREIGN KEY (u_id) REFERENCES Users(id)
+);
+
+INSERT INTO Users (
+  username,
+  first_name,
+  last_name,
+  password
+)
+VALUES (
+  'test',
+  'Jane',
+  'Doe',
+  'password123'
 );
