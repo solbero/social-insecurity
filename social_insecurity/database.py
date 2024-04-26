@@ -93,7 +93,7 @@ class SQLite3:
         if not self._path.exists():
             self._path.parent.mkdir(parents=True, exist_ok=True)
 
-        if schema:
+        if schema and not self._path.exists():
             with app.app_context():
                 self._init_database(schema)
         app.teardown_appcontext(self._close_connection)
