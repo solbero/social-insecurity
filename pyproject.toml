@@ -25,12 +25,11 @@ build-backend = "poetry.core.masonry.api"
 legacy_tox_ini = """
     [tox]
     envlist = py39, py310, py311, py312
-    isolated_build = true
 
     [testenv]
-    deps =
-        flask
-        pytest
+    skip_install = true
+    allowlist_externals = poetry
+    commands_pre = poetry install
     commands = pytest {posargs}
 """
 
