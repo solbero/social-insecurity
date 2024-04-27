@@ -13,7 +13,7 @@ Example:
     form = LoginForm()
     if form.validate_on_submit() and form.login.submit.data:
         username = form.username.data
-    """
+"""
 
 from datetime import datetime
 from typing import cast

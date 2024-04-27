@@ -17,8 +17,9 @@
               </div>
               <div class="card-body">
                 <p class="card-text">{{ post.content }}</p>
-                {% if post.image %}<img src="{{ url_for('uploads', filename=post.image) }}"
-     class="img-fluid mb-3">{% endif %}
+                {% if post.image %}
+                  <img src={{ url_for('uploads', filename=post.image) }} alt={{ post.image }} class="img-fluid mb-3">
+                {% endif %}
               </div>
             </div>
             <!-- Comment creation card cont -->
