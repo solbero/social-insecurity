@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 @pytest.fixture(scope="session")
 def app() -> Iterator[Flask]:
     test_config = {
-        "SQLITE3_DATABASE": "file::memory:?cache=shared",
+        "SQLITE3_DATABASE_PATH": "file::memory:?cache=shared",
         "TESTING": True,
         "WTF_CSRF_ENABLED": False,
     }

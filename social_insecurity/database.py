@@ -80,22 +80,24 @@ class SQLite3:
         else:
             raise RuntimeError("Flask SQLite3 extension already initialized")
 
-        if path == ":memory:" or app.config.get("SQLITE3_DATABASE_PATH") == ":memory:":
-            raise ValueError("Cannot use in-memory database with Flask SQLite3 extension")
+        instance_path = Path(app.instance_path)
+        database_path = path or app.config.get("SQLITE3_DATABASE_PATH")
 
-        if path:
-            self._path = Path(app.instance_path) / path
-        elif "SQLITE3_DATABASE_PATH" in app.config:
-            self._path = Path(app.instance_path) / app.config["SQLITE3_DATABASE_PATH"]
+        if database_path:
+            if ":memory:" in str(database_path):
+                self._path = Path(database_path)
+            else:
+                self._path = instance_path / database_path
         else:
-            self._path = Path(app.instance_path) / "sqlite3.db"
+            raise ValueError("No database path provided to SQLite3 extension")
 
         if not self._path.exists():
-            self._path.parent.mkdir(parents=True, exist_ok=True)
+            self._path.parent.mkdir(parents=True)
 
         if schema and not self._path.exists():
             with app.app_context():
                 self._init_database(schema)
+
         app.teardown_appcontext(self._close_connection)
 
     @property
