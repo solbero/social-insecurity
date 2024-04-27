@@ -79,14 +79,14 @@
 {% endblock content %}
 {% block script %}
   <script>
-    function switchVisibility(elem1, elem2) {
-        const viewDetails = document.querySelector(elem1);
-        const editDetails = document.querySelector(elem2);
+      function switchVisibility(elem1, elem2) {
+          const viewDetails = document.querySelector(elem1);
+          const editDetails = document.querySelector(elem2);
 
-        viewDetails.style.display = (
-            viewDetails.style.display == "block" ? "none" : "block");
-        editDetails.style.display = (
-            editDetails.style.display == "block" ? "none" : "block");
-    };
+          viewDetails.style.display = (
+              viewDetails.style.display == "block" ? "none" : "block");
+          editDetails.style.display = (
+              editDetails.style.display == "block" ? "none" : "block");
+      };
   </script>
 {% endblock script %}
