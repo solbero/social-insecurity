@@ -16,13 +16,17 @@
 {% endwith %}
 <!-- If form is defined, iterate over form errors and display them. -->
 {% if form is defined %}
-  {% for _, errors in form.errors.items() %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      {{ ', '.join(errors) }}
-      <button type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"></button>
-    </div>
+  {% for _, messages in form.errors.items() recursive %}
+    {% if messages is mapping %}
+      {{ loop(messages.items()) }}
+    {% else %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ ', '.join(messages) }}
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"></button>
+      </div>
+    {% endif %}
   {% endfor %}
 {% endif %}
