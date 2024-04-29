@@ -1,3 +1,7 @@
+-- --
+-- Create tables
+-- --
+
 CREATE TABLE [Users] (
   id INTEGER PRIMARY KEY,
   username VARCHAR,
@@ -39,11 +43,15 @@ CREATE TABLE [Comments](
   FOREIGN KEY (u_id) REFERENCES Users(id)
 );
 
+-- --
+-- Populate tables with test data
+-- --
+
 INSERT INTO Users (
   username,
   first_name,
   last_name,
-  password
+  [password]
 )
 VALUES (
   'test',
