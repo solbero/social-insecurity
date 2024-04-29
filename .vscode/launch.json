@@ -9,7 +9,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "flask",
-      "env": { "FLASK_APP": "socialinsecurity.py", "FLASK_DEBUG": "1" },
+      "env": { "FLASK_APP": "social_insecurity.py", "FLASK_DEBUG": "1" },
       "args": ["run", "--no-debugger", "--no-reload"],
       "jinja": true,
       "autoStartBrowser": false

@@ -52,7 +52,7 @@ Social Insecurity follows a standard Flask project structure. The most important
 - `tests/`, a directory containing test modules.
 - `.flaskenv`, a file containing application specific environment variables. This file is read by Flask when the application is started.
 - `pyproject.toml`, a file containing information about the application and its dependencies.
-- `socialinsecurity.py`, a file containing the application‘s entry point. This file can be used to start the application.
+- `social_insecurity.py`, a file containing the application‘s entry point. This file can be used to start the application.
 
 ## Usage
 
@@ -67,10 +67,10 @@ poetry run flask --debug run
 > [!TIP]
 > The `--debug` flag starts the application in debug mode. This mode enables the debugger, reloader, and other nice-to-have development features.
 
-An alternative way to start the application is by executing the `socialinsecurity.py` file using Python:
+An alternative way to start the application is by executing the `social_insecurity.py` file using Python:
 
 ```shell
-poetry run python socialinsecurity.py
+poetry run python social_insecurity.py
 ```
 
 Access the application by entering `http://localhost:5000/` in the address bar of a web browser while the application is running.
