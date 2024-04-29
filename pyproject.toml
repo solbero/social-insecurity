@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "social-insecurity"
-version = "1.0.0"
+version = "2.0.0"
 description = "A website written in Flask for practicing patching security flaws and bugs"
 authors = ["solbero <njosol@pm.me>"]
 license = "MIT"
