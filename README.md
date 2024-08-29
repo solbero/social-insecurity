@@ -156,7 +156,7 @@ poetry run djlint social_insecurity/templates/ --reformat
 
 ### Inspecting the database
 
-During development, you might like to inspect the SQLite database generated and used by the application. A good, multi-platform program for this task is DB Browser for SQLite. To install it, follow the [official installation instruction](https://sqlitebrowser.org/dl/).
+During development, you might like to inspect the SQLite database generated and used by the application. A good, multi-platform program for this task is [DB Browser for SQLite](https://sqlitebrowser.org). To install it, follow the [official installation instruction](https://sqlitebrowser.org/dl/).
 
 ## Useful resources
 
